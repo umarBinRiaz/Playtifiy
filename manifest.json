@@ -1,0 +1,78 @@
+{
+    "name": "Playtifiy - Your Personal Music",
+    "short_name": "Playtifiy",
+    "description": "Your music. Your playlists. Your way. Works on mobile, desktop and TV.",
+    "start_url": "./",
+    "scope": "./",
+    "display": "standalone",
+    "orientation": "any",
+    "dir": "auto",
+    "lang": "en",
+    "background_color": "#07090c",
+    "theme_color": "#07090c",
+    "categories": [
+        "music",
+        "entertainment"
+    ],
+    "shortcuts": [
+        {
+            "name": "My Songs",
+            "short_name": "Songs",
+            "url": "./?section=songs",
+            "icons": [
+                {
+                    "src": "./icons/icon-192.png",
+                    "sizes": "192x192"
+                }
+            ]
+        },
+        {
+            "name": "Favorites",
+            "short_name": "Favorites",
+            "url": "./?section=favorites",
+            "icons": [
+                {
+                    "src": "./icons/icon-192.png",
+                    "sizes": "192x192"
+                }
+            ]
+        },
+        {
+            "name": "Recently Played",
+            "short_name": "Recent",
+            "url": "./?section=recent",
+            "icons": [
+                {
+                    "src": "./icons/icon-192.png",
+                    "sizes": "192x192"
+                }
+            ]
+        }
+    ],
+    "icons": [
+        {
+            "src": "./icons/icon-512.png",
+            "sizes": "512x512",
+            "type": "image/png",
+            "purpose": "any"
+        },
+        {
+            "src": "./icons/icon-192.png",
+            "sizes": "192x192",
+            "type": "image/png",
+            "purpose": "any"
+        },
+        {
+            "src": "./icons/icon-maskable-512.png",
+            "sizes": "512x512",
+            "type": "image/png",
+            "purpose": "maskable"
+        },
+        {
+            "src": "./icons/icon-maskable-192.png",
+            "sizes": "192x192",
+            "type": "image/png",
+            "purpose": "maskable"
+        }
+    ]
+}

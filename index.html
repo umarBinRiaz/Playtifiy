@@ -1,0 +1,1170 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0, viewport-fit=cover"
+    >
+
+    <meta
+        name="theme-color"
+        content="#080b0f"
+    >
+
+    <meta
+        name="description"
+        content="Playtifiy - Your personal music player"
+    >
+
+    <meta
+        name="mobile-web-app-capable"
+        content="yes"
+    >
+
+    <meta
+        name="apple-mobile-web-app-capable"
+        content="yes"
+    >
+
+    <meta
+        name="apple-mobile-web-app-status-bar-style"
+        content="black-translucent"
+    >
+
+    <meta
+        name="apple-mobile-web-app-title"
+        content="Playtifiy"
+    >
+
+    <link
+        rel="manifest"
+        href="./manifest.json"
+    >
+
+    <link
+        rel="apple-touch-icon"
+        href="./icons/apple-touch-icon.png"
+    >
+
+    <link
+        rel="icon"
+        type="image/png"
+        sizes="192x192"
+        href="./icons/icon-192.png"
+    >
+
+    <title>Playtifiy</title>
+
+    <link
+        rel="shortcut icon"
+        href="./assets/Favico/fav.png"
+        type="image/png"
+    >
+
+    <link
+        rel="preconnect"
+        href="https://fonts.googleapis.com"
+    >
+
+    <link
+        rel="preconnect"
+        href="https://fonts.gstatic.com"
+        crossorigin
+    >
+
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap"
+        rel="stylesheet"
+    >
+
+    <link
+        rel="stylesheet"
+        href="./style.css"
+    >
+
+<script>
+(function () {
+    if ("serviceWorker" in navigator && location.protocol !== "file:") {
+        navigator.serviceWorker.register("./sw.js?v=6").then(function (reg) {
+            window.__playtifiySW = reg;
+        }).catch(function () {});
+    }
+    window.addEventListener("beforeinstallprompt", function (e) {
+        e.preventDefault();
+        window.__playtifiyDeferred = e;
+        window.dispatchEvent(new Event("playtifiy-install-ready"));
+    });
+    window.addEventListener("appinstalled", function () {
+        window.__playtifiyDeferred = null;
+        window.__playtifiyInstalled = true;
+    });
+    if (window.electronAPI) {
+        window.__playtifiyElectron = true;
+    }
+})();
+</script>
+
+</head>
+
+
+<body>
+
+    <!-- ==================================================
+         APP
+    =================================================== -->
+
+    <div class="app">
+
+
+        <!-- ==================================================
+             SIDEBAR
+        =================================================== -->
+
+        <aside class="sidebar">
+
+            <div class="sidebar-top">
+
+                <div class="logo">
+
+                    <span>♫</span>
+
+                    <h2>Playtifiy</h2>
+
+                </div>
+
+            </div>
+
+            <div class="sidebar-label">
+                MENU
+            </div>
+
+
+            <!-- NAVIGATION -->
+
+            <nav>
+
+                <button
+                    class="nav-btn active"
+                    data-section="home"
+                    type="button"
+                >
+
+                    <span>⌂</span>
+
+                    <strong>
+                        Home
+                    </strong>
+
+                </button>
+
+
+                <button
+                    class="nav-btn"
+                    data-section="songs"
+                    type="button"
+                >
+
+                    <span>♫</span>
+
+                    <strong>
+                        My Songs
+                    </strong>
+
+                </button>
+
+
+                <button
+                    class="nav-btn"
+                    data-section="favorites"
+                    type="button"
+                >
+
+                    <span>♡</span>
+
+                    <strong>
+                        Favorites
+                    </strong>
+
+                </button>
+
+
+                <button
+                    class="nav-btn"
+                    data-section="recent"
+                    type="button"
+                >
+
+                    <span>◷</span>
+
+                    <strong>
+                        Recently Played
+                    </strong>
+
+                </button>
+
+
+                <button
+                    class="nav-btn"
+                    data-section="downloads"
+                    type="button"
+                >
+
+                    <span>⤓</span>
+
+                    <strong>
+                        Downloads
+                    </strong>
+
+                </button>
+
+            </nav>
+
+
+            <!-- ==================================================
+                 PLAYLIST AREA
+            =================================================== -->
+
+            <div class="playlist-area">
+
+                <div class="playlist-heading">
+
+                    <span>
+                        Your Playlists
+                    </span>
+
+                    <button
+                        id="addPlaylistBtn"
+                        type="button"
+                        title="Create Playlist"
+                    >
+                        +
+                    </button>
+
+                </div>
+
+
+                <div id="playlistList"></div>
+
+            </div>
+
+
+            <!-- SIDEBAR BOTTOM -->
+
+            <div class="sidebar-bottom">
+
+                <div class="sidebar-tip">
+
+                    <span>
+                        ♫
+                    </span>
+
+                    <div>
+
+                        <strong>
+                            Your Music
+                        </strong>
+
+                        <small>
+                            Your personal music library
+                        </small>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </aside>
+
+
+        <!-- ==================================================
+             MAIN CONTENT
+        =================================================== -->
+
+        <main class="main">
+
+
+            <!-- ==================================================
+                 TOP BAR
+            =================================================== -->
+
+            <header class="topbar">
+
+
+                <!-- MOBILE HEADER -->
+
+                <div class="mobile-header">
+
+                    <button
+                        id="mobileMenu"
+                        class="mobile-menu"
+                        type="button"
+                        aria-label="Open menu"
+                    >
+                        ☰
+                    </button>
+
+
+                    <div class="mobile-logo">
+
+                        <span>
+                            ♫
+                        </span>
+
+                        <strong>
+                            Playtifiy
+                        </strong>
+
+                    </div>
+
+                </div>
+
+
+                <!-- SEARCH -->
+
+                <div class="search-box">
+
+                    <span>
+                        ⌕
+                    </span>
+
+                    <input
+                        type="text"
+                        id="searchInput"
+                        placeholder="Search your songs..."
+                        autocomplete="off"
+                    >
+
+                    <kbd>
+                        Ctrl K
+                    </kbd>
+
+                </div>
+
+
+                <!-- TOP ACTIONS -->
+
+                <div class="top-actions">
+
+
+                    <!-- SPOTIFY CONNECT -->
+
+                    <button
+                        id="connectSpotifyBtn"
+                        class="spotify-btn"
+                        type="button"
+                    >
+
+                        <span>
+                            ●
+                        </span>
+
+                        Connect Spotify
+
+                    </button>
+
+
+                    <!-- DISCONNECT -->
+
+                    <button
+                        id="disconnectSpotifyBtn"
+                        class="disconnect-btn"
+                        type="button"
+                    >
+
+                        Disconnect
+
+                    </button>
+
+
+                    <!-- YOUTUBE MUSIC -->
+
+                    <button
+                        id="youtubeMusicBtn"
+                        class="youtube-btn"
+                        type="button"
+                    >
+
+                        <span>
+                            ▶
+                        </span>
+
+                        YouTube Music
+
+                    </button>
+
+
+                    <!-- INSTALL APP -->
+
+                    <button
+                        id="installBtn"
+                        class="install-btn"
+                        type="button"
+                        title="Install Playtifiy"
+                    >
+
+                        <span>
+                            ⤓
+                        </span>
+
+                        Install
+
+                    </button>
+
+
+                    <!-- THEME -->
+
+                    <button
+                        id="themeToggle"
+                        class="theme-toggle"
+                        type="button"
+                        title="Toggle theme"
+                        aria-label="Toggle theme"
+                    >
+
+                        ☾
+
+                    </button>
+
+                </div>
+
+            </header>
+
+
+            <!-- ==================================================
+                 HOME SECTION
+            =================================================== -->
+
+            <section
+                id="homeSection"
+                class="section active"
+            >
+
+
+                <!-- ==================================================
+                     HERO
+                =================================================== -->
+
+                <div class="hero">
+
+
+                    <div class="hero-glow"></div>
+
+
+                    <!-- HERO CONTENT -->
+
+                    <div class="hero-content">
+
+
+                        <div class="hero-badge">
+
+                            <span></span>
+
+                            YOUR PERSONAL MUSIC
+
+                        </div>
+
+
+                        <h1>
+
+                            Listen to
+                            <em>
+                                what
+                            </em>
+                            you love.
+
+                        </h1>
+
+
+                        <p>
+
+                            Your music.
+                            Your playlists.
+                            Your way.
+
+                        </p>
+
+
+                        <div class="hero-buttons">
+
+
+                            <button
+                                id="playAllBtn"
+                                class="primary-btn"
+                                type="button"
+                            >
+
+                                <span>
+                                    ▶
+                                </span>
+
+                                Play All
+
+                            </button>
+
+
+                            <button
+                                id="heroSpotifyBtn"
+                                class="secondary-btn"
+                                type="button"
+                            >
+
+                                <span>
+                                    ●
+                                </span>
+
+                                Spotify
+
+                            </button>
+
+                        </div>
+
+                    </div>
+
+
+                    <!-- HERO ART -->
+
+                    <div class="hero-art">
+
+
+                        <div class="vinyl">
+
+                            <div class="vinyl-center">
+
+                                ♫
+
+                            </div>
+
+                        </div>
+
+
+                        <div class="floating-card card-one">
+
+                            ♫
+
+                        </div>
+
+
+                        <div class="floating-card card-two">
+
+                            ♥
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+
+                <!-- ==================================================
+                     HOME SONG HEADER
+                =================================================== -->
+
+                <div class="section-title">
+
+                    <div>
+
+                        <div class="title-row">
+
+                            <h2>
+                                Your Songs
+                            </h2>
+
+                            <span class="live-dot"></span>
+
+                        </div>
+
+
+                        <span id="songCount"></span>
+
+                    </div>
+
+                </div>
+
+
+                <!-- HOME SONGS -->
+
+                <div
+                    id="homeSongs"
+                    class="song-grid"
+                ></div>
+
+            </section>
+
+
+            <!-- ==================================================
+                 MY SONGS SECTION
+            =================================================== -->
+
+            <section
+                id="songsSection"
+                class="section"
+            >
+
+
+                <div class="page-header">
+
+                    <div>
+
+                        <span class="page-kicker">
+                            LIBRARY
+                        </span>
+
+                        <h1>
+                            My Songs
+                        </h1>
+
+                        <span id="allSongCount"></span>
+
+                    </div>
+
+                </div>
+
+
+                <div
+                    id="allSongs"
+                    class="song-grid"
+                ></div>
+
+            </section>
+
+
+            <!-- ==================================================
+                 FAVORITES SECTION
+            =================================================== -->
+
+            <section
+                id="favoritesSection"
+                class="section"
+            >
+
+
+                <div class="page-header">
+
+                    <div>
+
+                        <span class="page-kicker">
+                            COLLECTION
+                        </span>
+
+                        <h1>
+                            ❤️ Favorites
+                        </h1>
+
+                        <span>
+                            Your liked songs
+                        </span>
+
+                    </div>
+
+                </div>
+
+
+                <div
+                    id="favoriteSongs"
+                    class="song-grid"
+                ></div>
+
+            </section>
+
+
+            <!-- ==================================================
+                 RECENT SECTION
+            =================================================== -->
+
+            <section
+                id="recentSection"
+                class="section"
+            >
+
+
+                <div class="page-header">
+
+                    <div>
+
+                        <span class="page-kicker">
+                            HISTORY
+                        </span>
+
+                        <h1>
+                            Recently Played
+                        </h1>
+
+                        <span>
+                            Your listening history
+                        </span>
+
+                    </div>
+
+                </div>
+
+
+                <div
+                    id="recentSongs"
+                    class="song-grid"
+                ></div>
+
+            </section>
+
+
+            <!-- ==================================================
+                 DOWNLOADS SECTION
+            =================================================== -->
+
+            <section
+                id="downloadsSection"
+                class="section"
+            >
+
+                <div class="page-header">
+
+                    <div>
+
+                        <span class="page-kicker">
+                            OFFLINE
+                        </span>
+
+                        <h1>
+                            Downloads
+                        </h1>
+
+                        <span id="downloadCount">0 songs downloaded</span>
+
+                    </div>
+
+                </div>
+
+
+                <div class="downloads-info">
+
+                    <div class="downloads-stats">
+
+                        <div class="stat-card">
+                            <span class="stat-label">Downloaded</span>
+                            <span id="downloadedTotalSize" class="stat-value">0 B</span>
+                        </div>
+
+                    </div>
+
+                    <p class="downloads-hint">
+                        Download songs for offline playback. Click the download button on any song card.
+                    </p>
+
+                </div>
+
+
+                <div
+                    id="downloadedSongs"
+                    class="song-grid"
+                ></div>
+
+            </section>
+
+        </main>
+
+    </div>
+
+
+    <!-- ==================================================
+         MUSIC PLAYER
+    =================================================== -->
+
+    <div class="player">
+
+
+        <!-- ==================================================
+             NOW PLAYING
+        =================================================== -->
+
+        <div class="now-playing">
+
+
+            <div class="player-cover-wrap">
+
+                <img
+                    id="playerCover"
+                    src="https://placehold.co/70x70/181818/ffffff?text=♫"
+                    alt="Song cover"
+                >
+
+
+                <div class="playing-bars">
+
+                    <i></i>
+                    <i></i>
+                    <i></i>
+
+                </div>
+
+            </div>
+
+
+            <!-- TRACK INFO -->
+
+            <div class="track-info">
+
+                <h4 id="playerTitle">
+                    No song selected
+                </h4>
+
+                <p id="playerArtist">
+                    Choose a song
+                </p>
+
+            </div>
+
+
+            <!-- FAVORITE -->
+
+            <button
+                id="favoriteBtn"
+                class="heart-btn"
+                type="button"
+                title="Add to favorites"
+            >
+
+                ♡
+
+            </button>
+
+        </div>
+
+
+        <!-- ==================================================
+             PLAYER CENTER
+        =================================================== -->
+
+        <div class="player-center">
+
+
+            <!-- CONTROLS -->
+
+            <div class="controls">
+
+
+                <button
+                    id="shuffleBtn"
+                    type="button"
+                    title="Shuffle"
+                    aria-label="Shuffle"
+                >
+                    🔀
+                </button>
+
+
+                <button
+                    id="previousBtn"
+                    type="button"
+                    title="Previous"
+                    aria-label="Previous"
+                >
+                    ⏮
+                </button>
+
+
+                <button
+                    id="playBtn"
+                    class="play-button"
+                    type="button"
+                    title="Play / Pause"
+                    aria-label="Play or pause"
+                >
+                    ▶
+                </button>
+
+
+                <button
+                    id="nextBtn"
+                    type="button"
+                    title="Next"
+                    aria-label="Next"
+                >
+                    ⏭
+                </button>
+
+
+                <button
+                    id="repeatBtn"
+                    type="button"
+                    title="Repeat"
+                    aria-label="Repeat"
+                >
+                    🔁
+                </button>
+
+            </div>
+
+
+            <!-- PROGRESS -->
+
+            <div class="progress-container">
+
+
+                <span id="currentTime">
+                    0:00
+                </span>
+
+
+                <input
+                    type="range"
+                    id="progress"
+                    value="0"
+                    min="0"
+                    max="100"
+                    step="0.1"
+                    aria-label="Song progress"
+                >
+
+
+                <span id="duration">
+                    0:00
+                </span>
+
+            </div>
+
+        </div>
+
+
+        <!-- ==================================================
+             PLAYER RIGHT
+        =================================================== -->
+
+        <div class="player-right">
+
+
+            <span class="volume-icon">
+                🔊
+            </span>
+
+
+            <input
+                type="range"
+                id="volume"
+                min="0"
+                max="1"
+                step="0.01"
+                value="0.8"
+                aria-label="Volume"
+            >
+
+
+            <button
+                id="autoNextBtn"
+                class="toggle active"
+                type="button"
+            >
+
+                Auto Next
+
+            </button>
+
+        </div>
+
+    </div>
+
+
+    <!-- ==================================================
+         AUDIO ELEMENT
+    =================================================== -->
+
+    <audio
+        id="audio"
+        preload="metadata"
+    ></audio>
+
+
+    <!-- ==================================================
+         PLAYLIST MODAL
+    =================================================== -->
+
+    <div
+        id="playlistModal"
+        class="modal"
+        aria-hidden="true"
+    >
+
+
+        <div
+            class="modal-box"
+            role="dialog"
+            aria-modal="true"
+            aria-labelledby="playlistModalTitle"
+        >
+
+
+            <!-- CLOSE -->
+
+            <button
+                id="closeModal"
+                class="close"
+                type="button"
+                aria-label="Close"
+            >
+
+                ×
+
+            </button>
+
+
+            <!-- ICON -->
+
+            <div class="modal-icon">
+
+                ♫
+
+            </div>
+
+
+            <!-- LABEL -->
+
+            <span class="modal-kicker">
+
+                PLAYLIST
+
+            </span>
+
+
+            <!-- TITLE -->
+
+            <h2 id="playlistModalTitle">
+
+                Create Playlist
+
+            </h2>
+
+
+            <!-- DESCRIPTION -->
+
+            <p>
+
+                Create a personal playlist
+                for your favorite songs.
+
+            </p>
+
+
+            <!-- NAME -->
+
+            <input
+                type="text"
+                id="playlistName"
+                placeholder="Playlist name"
+                autocomplete="off"
+            >
+
+
+            <!-- CREATE -->
+
+            <button
+                id="createPlaylist"
+                class="primary-btn"
+                type="button"
+            >
+
+                Create Playlist
+
+            </button>
+
+        </div>
+
+    </div>
+
+
+    <!-- ==================================================
+         OFFLINE STORAGE + DOWNLOAD MANAGER
+    =================================================== -->
+
+    <script
+        src="./js/offline-storage.js"
+    ></script>
+
+    <script
+        src="./js/download-manager.js"
+    ></script>
+
+
+    <!-- ==================================================
+         YOUR EXISTING JAVASCRIPT
+    =================================================== -->
+
+    <script
+        src="./js/script.js"
+    ></script>
+
+
+    <!-- ==================================================
+         PWA + TV / MEDIA SESSION ENHANCEMENTS
+    =================================================== -->
+
+    <script
+        src="./js/enhance.js"
+    ></script>
+
+
+    <!-- ==================================================
+         LIGHT / DARK MODE
+    =================================================== -->
+
+    <script>
+
+        document.addEventListener("DOMContentLoaded", function () {
+
+            const themeToggle =
+                document.getElementById("themeToggle");
+
+            if (!themeToggle) {
+                return;
+            }
+
+
+            const savedTheme =
+                localStorage.getItem("playtifiy-theme");
+
+
+            if (savedTheme === "light") {
+
+                document.body.classList.add("light-mode");
+
+                themeToggle.textContent = "☀";
+
+            } else {
+
+                document.body.classList.remove("light-mode");
+
+                themeToggle.textContent = "☾";
+
+            }
+
+
+            themeToggle.addEventListener("click", function () {
+
+                document.body.classList.toggle("light-mode");
+
+
+                const isLight =
+                    document.body.classList.contains("light-mode");
+
+
+                localStorage.setItem(
+                    "playtifiy-theme",
+                    isLight ? "light" : "dark"
+                );
+
+
+                themeToggle.textContent =
+                    isLight ? "☀" : "☾";
+
+            });
+
+        });
+
+    </script>
+
+
+</body>
+
+</html>

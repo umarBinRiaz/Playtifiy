@@ -1,0 +1,16 @@
+{
+  "name": "playtifiy",
+  "version": "1.0.0",
+  "description": "Your personal music player - works offline, no dependencies",
+  "scripts": {
+    "dev": "npx serve . -p 3000",
+    "preview": "npx serve . -p 3000"
+  },
+  "author": "Umar Bin Riaz",
+  "license": "MIT",
+  "homepage": "https://umarbinriaz.github.io/Playtifiy/",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/umarbinriaz/Playtifiy.git"
+  }
+}
