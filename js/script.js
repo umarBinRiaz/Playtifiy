@@ -170,7 +170,7 @@ var songs = [
     // {
     //     id: 22,
     //     title: "295",
-    //     artist: "Sidhu Moose Wala",
+     //     artist: "Sidhu Moose Wala",
     //     cover: "https://is1-ssl.mzstatic.com/image/thumb/Music221/v4/97/69/58/976958ae-725e-bd41-6755-f0921c697840/810063889609_cover.jpg/600x600bb.jpg",
     //     src: "https://audio-ssl.itunes.apple.com/itunes-assets/AudioPreview211/v4/7f/f3/6d/7ff36d63-b933-3993-cd2f-f3fd770c3763/mzaf_12675758250838366519.plus.aac.p.m4a"
     // },
