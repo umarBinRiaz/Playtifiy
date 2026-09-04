@@ -31,7 +31,7 @@ jobs:
           node-version: '20'
 
       - name: Install Bubblewrap CLI
-        run: npm install -g @bubblewrap/cli
+        run: npm install -g @bubblewrap/cli@1.24.1
 
       - name: Seed Bubblewrap config
         run: |
@@ -42,8 +42,6 @@ jobs:
             "androidSdkPath": ""
           }
           EOF
-          echo "Bubblewrap config:"
-          cat "$HOME/.bubblewrap/config.json"
 
       - name: Generate signing keystore
         run: |
@@ -58,28 +56,56 @@ jobs:
             -dname "CN=Playtifiy, O=Playtifiy, C=US" \
             -noprompt
 
-      - name: Init TWA project
+      - name: Create twa-manifest.json
         run: |
           mkdir -p build/twa
-          cd build/twa
-          printf '\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n' | bubblewrap init --manifest https://umarbinriaz.github.io/Playtifiy/manifest.json
+          cat > build/twa/twa-manifest.json << EOF
+          {
+            "packageId": "com.umarbinriaz.playtifiy",
+            "name": "Playtifiy",
+            "shortName": "Playtifiy",
+            "startUrl": "https://umarbinriaz.github.io/Playtifiy/",
+            "themeColor": "#07090c",
+            "backgroundColor": "#07090c",
+            "iconUrl": "https://umarbinriaz.github.io/Playtifiy/icons/icon-512.png",
+            "maskableIconUrl": "https://umarbinriaz.github.io/Playtifiy/icons/icon-maskable-512.png",
+            "monochromeIconUrl": "https://umarbinriaz.github.io/Playtifiy/icons/icon-192.png",
+            "splashScreenColor": "#07090c",
+            "navigationColor": "#07090c",
+            "navigationColorDark": "#07090c",
+            "navigationDividerColor": "#07090c",
+            "navigationDividerColorDark": "#07090c",
+            "signingKey": {
+              "path": "../../android.keystore",
+              "alias": "playtifiy",
+              "keystorePassword": "playtifiy123",
+              "keyPassword": "playtifiy123"
+            },
+            "appVersionCode": 1,
+            "appVersionName": "1.0.0",
+            "appVersion": "1.0.0",
+            "fallbackType": "custom-tabs",
+            "useCaptivePortal": false,
+            "enableNotifications": false,
+            "isTriangleEnabled": false
+          }
+          EOF
 
-      - name: Build APK
+      - name: Generate Android project from manifest
+        working-directory: build/twa
+        run: yes | bubblewrap update --skipVersionUpgrade
+
+      - name: Build signed APK
         working-directory: build/twa
         env:
           BUBBLEWRAP_KEYSTORE_PASSWORD: playtifiy123
           BUBBLEWRAP_KEY_PASSWORD: playtifiy123
-        run: |
-          bubblewrap build --skipPwaValidation || true
-          find . -name "*.apk" -not -path "*/node_modules/*"
+        run: bubblewrap build --skipPwaValidation
 
       - name: Find APK files
         run: |
-          echo "=== Searching for APK files ==="
-          find . -name "*.apk" -not -path "*/node_modules/*" 2>/dev/null
-          echo "=== Searching in build/twa ==="
-          ls -la build/twa/ 2>/dev/null || echo "build/twa not found"
-          find build/ -name "*.apk" 2>/dev/null || echo "No APK in build/"
+          echo "=== APK files ==="
+          find build/ -name "*.apk" 2>/dev/null || echo "No APK found"
 
       - name: Upload APK artifact
         uses: actions/upload-artifact@v4
@@ -87,7 +113,7 @@ jobs:
           name: playtifiy-android
           path: |
             build/twa/app-release-signed.apk
-            build/twa/app-debug.apk
+            build/twa/app-release-bundle.aab
           if-no-files-found: warn
           retention-days: 30
 
@@ -97,7 +123,7 @@ jobs:
         with:
           files: |
             build/twa/app-release-signed.apk
-            build/twa/app-debug.apk
+            build/twa/app-release-bundle.aab
           generate_release_notes: true
           body: |
             ## Playtifiy Android APK
@@ -114,6 +140,6 @@ jobs:
             3. Install and launch Playtifiy
 
             **PWA Install (No APK needed):**
-            Visit https://umarbinriaz.github.io/Playtifiy/ in Chrome on any device and tap "Install" or "Add to Home Screen".
+            Visit https://umarbinriaz.github.io/Playtifiy/ in Chrome and tap "Install" or "Add to Home Screen".
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
